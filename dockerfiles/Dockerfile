@@ -1,0 +1,43 @@
+FROM nvcr.io/nvidia/tensorrt:22.01-py3
+
+ENV TZ=Asia/Almaty
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN export LC_ALL=C.UTF-8
+RUN export LANG=C.UTF-8
+
+RUN DEBIAN_FRONTEND="noninteractive" apt-get update && apt-get -y install tzdata sudo
+
+RUN apt-get update \
+  && apt-get install -y ssh \
+      build-essential \
+      gcc \
+      g++ \
+      gdb \
+      clang \
+      make \
+      ninja-build \
+      cmake \
+      curl \
+      ca-certificates \
+      autoconf \
+      automake \
+      locales-all \
+      dos2unix \
+      rsync \
+      tar \
+      python \
+    python3-dev \
+    python3-pip \
+    ffmpeg libsm6 libxext6 \
+  && apt-get clean
+
+RUN curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o get-pip.py && python3 get-pip.py --force-reinstall
+RUN sudo pip3 install tqdm llvmlite numba scipy opencv-python uvicorn
+RUN sudo pip3 install fastapi python-multipart
+RUN sudo pip3 install paramiko
+RUN sudo pip3 install Flask matplotlib numpy opencv-python python-telegram-bot requests scikit-image scipy pycocotools nltk gunicorn shortuuid
+RUN sudo pip3 install uvicorn scikit-learn
+RUN sudo pip3 install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+RUN sudo pip3 install tritonclient[all]
+
+
